@@ -6,6 +6,10 @@ module regex
 
   public :: new_re, match_re, sub_re
 
+
+  integer, parameter :: DEBUG_CHANNEL = 25
+  logical, save :: debug = .false.
+
 contains
 
   function new_re (regex_str)

@@ -2,6 +2,8 @@
 
 F90 = g95
 
+default: fexp.o ; $(F90) -c regex.f90
+
 test: fexp.o test.o ; $(F90) fexp.o test.o -o test
 
 fexp.o : fexp.f90 ; $(F90) -c fexp.f90
