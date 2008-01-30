@@ -29,5 +29,10 @@ print*, "P+o, FooBar, ", match("P+o", "FooBar"), "false"
 print*, "Fo+o, FooBar, ", match("Fo+o", "FooBar"), "true"
 print*, "Po+o, FooBar, ", match("Po+o", "FooBar"), "false"
 print*, "F[po]o, FooBar, ", match("F[po]o", "FooBar"), "true"
+print*, "F[op]o, FooBar, ", match("F[op]o", "FooBar"), "true"
+print*, "F[qp]o, FooBar, ", match("F[qp]o", "FooBar"), "false"
+
+print*, "F[qpo, FooBar, Stops!"
+print*, match("F[qpo", "FooBar")
 
 end program test
