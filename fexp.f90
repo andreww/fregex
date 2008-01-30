@@ -36,19 +36,24 @@ contains
                 res = .true.
         elseif (regexp(1:1).eq.".") then
                 res = .true.
-        elseif ((regexp(1:1).eq."$").and.(len(text).eq.0)) then
+        elseif ((regexp(1:1).eq."$") &
+                & .and.(len(text).eq.0)) then
                 res = .true.
         else 
                 res = .false.
         endif
     elseif (regexp(2:2).eq."*") then
-        res = matchstar(regexp(1:1), regexp(3:len(regexp)), text)
+        res = matchstar(regexp(1:1), & 
+                     & regexp(3:len(regexp)), text)
     elseif (regexp(2:2).eq."+") then
-        res = matchhere(regexp(1:1)//regexp(1:1)//'*'//regexp(3:len(regexp)), text)
+        res = matchhere(regexp(1:1)//regexp(1:1)// & 
+                     & '*'//regexp(3:len(regexp)), text)
     elseif (text(1:1).eq.regexp(1:1)) then
-        res =  matchhere( regexp(2:len(regexp)), text(2:len(text)) )
+        res =  matchhere( regexp(2:len(regexp)), &
+                     & text(2:len(text)) )
     elseif (regexp(1:1).eq.".") then
-        res =  matchhere( regexp(2:len(regexp)), text(2:len(text)) )
+        res =  matchhere( regexp(2:len(regexp)), & 
+                     &  text(2:len(text)) )
     else 
         res = .false.
     endif
@@ -68,7 +73,11 @@ contains
           if (matchhere(regexp, text)) then
               matchstar = .true.
               exit
-          elseif ((pos.ne.len(text)).and.( (text(pos+1:pos+2).eq.starchar).or.(text(pos+1:pos+2).eq.".") )) then
+          elseif ((pos.ne.len(text)) &
+                  & .and. ( &
+                  &    (text(pos+1:pos+2).eq.starchar) & 
+                  &    .or.(text(pos+1:pos+2).eq.".") & 
+                  & )) then
               pos = pos+1
           else
               matchstar = .false.
