@@ -60,7 +60,7 @@ contains
 
   end function matchhere
 
-  logical function matchstar(starchar, regexp, text) 
+  logical recursive function matchstar(starchar, regexp, text) 
 
       character(len=1), intent(in) :: starchar
       character(len=*), intent(in) :: regexp
@@ -73,10 +73,10 @@ contains
           if (matchhere(regexp, text)) then
               matchstar = .true.
               exit
-          elseif ((pos.ne.len(text)) &
+          elseif ((pos.le.len(text)) &
                   & .and. ( &
-                  &    (text(pos+1:pos+2).eq.starchar) & 
-                  &    .or.(text(pos+1:pos+2).eq.".") & 
+                  &    (text(pos:pos).eq.starchar) & 
+                  &    .or.(starchar.eq.".") & 
                   & )) then
               pos = pos+1
           else
