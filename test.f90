@@ -28,6 +28,6 @@ print*, "o+o, FooBar, ", match("o+o", "FooBar"), "true"
 print*, "P+o, FooBar, ", match("P+o", "FooBar"), "false"
 print*, "Fo+o, FooBar, ", match("Fo+o", "FooBar"), "true"
 print*, "Po+o, FooBar, ", match("Po+o", "FooBar"), "false"
-
+print*, "F[po]o, FooBar, ", match("F[po]o", "FooBar"), "true"
 
 end program test

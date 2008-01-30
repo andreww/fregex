@@ -6,6 +6,15 @@ module regex
 
   public :: new_re, match_re, sub_re
 
+  type token 
+    character, lem=(1) :: literal
+    integer :: ttype
+  end type
+
+  integer, parameter :: LITERAL = 0
+  integer, parameter :: STAR = 1
+  integer, parameter :: ENDANCH = 2
+  integer, parameter :: STARTANCH = 3
 
   integer, parameter :: DEBUG_CHANNEL = 25
   logical, save :: debug = .false.
