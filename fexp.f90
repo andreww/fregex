@@ -47,7 +47,11 @@ contains
     elseif (regexp(1:1).eq.'[') then
         classend = index(regexp(2:len(regexp)), ']')
         if (classend.eq.0) stop("No terminating char class")
-        res = matchclass(regexp(2:classend), regexp(classend+2:len(regexp)), text)
+        if (scan(text,regexp(2:classend)).eq.1) then
+             res = matchhere(regexp(classend+2:len(regexp)), text(2:len(text)))
+        else
+             res = .false.
+        endif
     elseif (regexp(2:2).eq."*") then
         res = matchstar(regexp(1:1), & 
                      & regexp(3:len(regexp)), text)
@@ -65,20 +69,6 @@ contains
     endif
 
   end function matchhere
-
-  logical recursive function matchclass(class, regexp, text)
-
-      character(len=*), intent(in) :: class
-      character(len=*), intent(in) :: regexp
-      character(len=*), intent(in) :: text
-
-      if (scan(text,class).eq.1) then
-          matchclass = matchhere(regexp, text)
-      else
-          matchclass = .false.
-      endif
-
-  end function matchclass
 
   logical recursive function matchstar(starchar, regexp, text) 
 
