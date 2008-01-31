@@ -173,6 +173,11 @@ contains
                   &    (scan(text(1:1),class).eq.1) & 
                   & )) then
               pos = pos+1
+          elseif ((pos.le.len(text)) &
+                  & .and.negate.and. ( &
+                  &    (scan(text(1:1),class).eq.0) & 
+                  & )) then
+              pos = pos+1
           else
               starcharclar = .false.
               exit

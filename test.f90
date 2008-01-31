@@ -46,6 +46,10 @@ print*, "F[po]*o, FooBar, ", match("F[po]*o", "FooBar"), "true"
 print*, "F[op]*o, FooBar, ", match("F[op]*o", "FooBar"), "true"
 print*, "F[qp]*o, FooBar, ", match("F[qp]*o", "FooBar"), "true"
 print*, "P[qp]*o, FooBar, ", match("P[qp]*o", "FooBar"), "false"
+print*, "F[^po]*o, FooBar, ", match("F[^po]*o", "FooBar"), "true"
+print*, "F[^op]*o, FooBar, ", match("F[^op]*o", "FooBar"), "true"
+print*, "F[^qp]*o, FooBar, ", match("F[^qp]*o", "FooBar"), "true"
+print*, "P[^qp]*o, FooBar, ", match("P[^qp]*o", "FooBar"), "false"
 
 
 print*, "F[qpo, FooBar, Stops!"
