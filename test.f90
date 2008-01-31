@@ -31,6 +31,11 @@ print*, "Po+o, FooBar, ", match("Po+o", "FooBar"), "false"
 print*, "F[po]o, FooBar, ", match("F[po]o", "FooBar"), "true"
 print*, "F[op]o, FooBar, ", match("F[op]o", "FooBar"), "true"
 print*, "F[qp]o, FooBar, ", match("F[qp]o", "FooBar"), "false"
+print*, "F\do, FooBar, ", match("F\do", "FooBar"), "false"
+print*, "F\wo, FooBar, ", match("F\wo", "FooBar"), "true"
+print*, "F\do, F5oBar, ", match("F\do", "F5oBar"), "true"
+print*, "F\wo, F5oBar, ", match("F\wo", "F5oBar"), "true"
+
 
 print*, "F[qpo, FooBar, Stops!"
 print*, match("F[qpo", "FooBar")

@@ -2,6 +2,11 @@ module fexp
 
  implicit none
 
+ character(len=10), parameter :: numbers = '1234567890'
+ character(len=26), parameter :: lowercase = 'abcdefghijklmnopqrstuvwxyz'
+ character(len=26), parameter :: uppercase = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+ character(len=2), parameter :: otherwords = '-_'
+
 contains
 
  logical function match(regexp, text)
@@ -51,6 +56,22 @@ contains
              res = matchhere(regexp(classend+2:len(regexp)), text(2:len(text)))
         else
              res = .false.
+        endif
+    elseif (regexp(1:1).eq.'\') then
+        if (regexp(2:2).eq.'w') then
+            if (scan(text,numbers//lowercase//uppercase//otherwords).eq.1) then
+                 res = matchhere(regexp(3:len(regexp)), text(2:len(text)))
+            else
+                 res = .false.
+            endif
+        elseif (regexp(2:2).eq.'d') then
+            if (scan(text,numbers).eq.1) then
+                 res = matchhere(regexp(3:len(regexp)), text(2:len(text)))
+            else
+                 res = .false.
+            endif
+        else
+            stop("Unrecongised char class shortcut")
         endif
     elseif (regexp(2:2).eq."*") then
         res = matchstar(regexp(1:1), & 
