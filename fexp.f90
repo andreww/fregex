@@ -52,24 +52,12 @@ contains
     elseif (regexp(1:1).eq.'[') then
         classend = index(regexp(2:len(regexp)), ']')
         if (classend.eq.0) stop("No terminating char class")
-        if (scan(text,regexp(2:classend)).eq.1) then
-             res = matchhere(regexp(classend+2:len(regexp)), text(2:len(text)))
-        else
-             res = .false.
-        endif
+        res = charclass(regexp(2:classend), regexp(classend+2:len(regexp)), text)
     elseif (regexp(1:1).eq.'\') then
         if (regexp(2:2).eq.'w') then
-            if (scan(text,numbers//lowercase//uppercase//otherwords).eq.1) then
-                 res = matchhere(regexp(3:len(regexp)), text(2:len(text)))
-            else
-                 res = .false.
-            endif
+            res = charclass(numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
         elseif (regexp(2:2).eq.'d') then
-            if (scan(text,numbers).eq.1) then
-                 res = matchhere(regexp(3:len(regexp)), text(2:len(text)))
-            else
-                 res = .false.
-            endif
+            res = charclass(numbers, regexp(3:len(regexp)), text)
         else
             stop("Unrecongised char class shortcut")
         endif
@@ -118,5 +106,19 @@ contains
 
 
   end function matchstar
+
+  logical recursive function charclass(class, regexp, text)
+
+      character(len=*), intent(in) :: class
+      character(len=*), intent(in) :: regexp ! after the class
+      character(len=*), intent(in) :: text 
+
+      if (scan(text(1:1),class).eq.1) then
+          charclass = matchhere(regexp, text(2:len(text)))
+      else
+          charclass = .false.
+      endif
+
+  end function charclass
 
 end module fexp
