@@ -52,7 +52,11 @@ contains
     elseif (regexp(1:1).eq.'[') then
         classend = index(regexp(2:len(regexp)), ']')
         if (classend.eq.0) stop("No terminating char class")
-        res = charclass(regexp(2:classend), regexp(classend+2:len(regexp)), text)
+        if (regexp(classend+2:classend+2).eq.'*') then
+            res = starcharclar(regexp(2:classend), regexp(classend+3:len(regexp)), text)
+        else
+            res = charclass(regexp(2:classend), regexp(classend+2:len(regexp)), text)
+        endif
     elseif (regexp(1:1).eq.'\') then
         if (regexp(2:2).eq.'w') then
             res = charclass(numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
@@ -93,7 +97,7 @@ contains
       
       pos = 1
       do 
-          if (matchhere(regexp, text)) then
+          if (matchhere(regexp, text(pos:len(text)))) then
               matchstar = .true.
               exit
           elseif ((pos.le.len(text)) &
@@ -141,5 +145,40 @@ contains
       endif
 
   end function charclass
+
+  logical recursive function starcharclar(class, regexp, text)
+
+      character(len=*), intent(in) :: class
+      character(len=*), intent(in) :: regexp ! after the class
+      character(len=*), intent(in) :: text 
+
+      logical :: negate = .false.
+      integer :: pos
+
+      if (class(1:1).eq.'^') then 
+         negate = .true.
+      endif
+
+      if ((len(class).lt.1).and..not.negate) stop ("Empty char class!") 
+      if ((len(class).lt.2).and.negate) stop ("Empty char class!") 
+  
+      
+      pos = 1
+      do 
+          if (matchhere(regexp, text(pos:len(text)))) then
+              starcharclar = .true.
+              exit
+          elseif ((pos.le.len(text)) &
+                  & .and..not.negate.and. ( &
+                  &    (scan(text(1:1),class).eq.1) & 
+                  & )) then
+              pos = pos+1
+          else
+              starcharclar = .false.
+              exit
+          endif
+      enddo
+
+  end function starcharclar
 
 end module fexp
