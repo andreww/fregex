@@ -58,6 +58,10 @@ contains
             res = charclass(numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
         elseif (regexp(2:2).eq.'d') then
             res = charclass(numbers, regexp(3:len(regexp)), text)
+        elseif (regexp(2:2).eq.'W') then
+            res = charclass("^"//numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
+        elseif (regexp(2:2).eq.'D') then
+            res = charclass("^"//numbers, regexp(3:len(regexp)), text)
         else
             stop("Unrecongised char class shortcut")
         endif
@@ -113,10 +117,27 @@ contains
       character(len=*), intent(in) :: regexp ! after the class
       character(len=*), intent(in) :: text 
 
-      if (scan(text(1:1),class).eq.1) then
-          charclass = matchhere(regexp, text(2:len(text)))
+      logical :: negate = .false.
+
+      if (class(1:1).eq.'^') then 
+         negate = .true.
+      endif
+
+      if ((len(class).lt.1).and..not.negate) stop ("Empty char class!") 
+      if ((len(class).lt.2).and.negate) stop ("Empty char class!") 
+  
+      if (.not.negate) then
+          if (scan(text(1:1),class).eq.1) then
+              charclass = matchhere(regexp, text(2:len(text)))
+          else
+              charclass = .false.
+          endif
       else
-          charclass = .false.
+          if (scan(text(1:1),class(2:len(class))).eq.1) then
+              charclass = .false.
+          else
+              charclass = matchhere(regexp, text(2:len(text)))
+          endif
       endif
 
   end function charclass
