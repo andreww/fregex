@@ -38,7 +38,11 @@ contains
     
     integer :: classend 
 
-    if (len(regexp).eq.1) then 
+    if (len(regexp).eq.0) then
+        ! Assuming idiot input is protected by caller
+        ! this is needed to simplify the other recursive functions.
+        res = .true.
+    elseif (len(regexp).eq.1) then 
         if (text(1:1).eq.regexp(1:1)) then
                 res = .true.
         elseif (regexp(1:1).eq.".") then
@@ -132,6 +136,20 @@ contains
 
   end function matchhere
 
+  logical recursive function litmatch(regexp, text)
+
+    character(len=*), intent(in) :: regexp
+    character(len=*), intent(in) :: text
+
+    if (text(1:1).eq.regexp(1:1)) then
+        litmatch =  matchhere( regexp(2:len(regexp)), &
+                     & text(2:len(text)) )
+    else
+        litmatch = .false.
+    endif
+
+  end function litmatch
+
   logical recursive function onematch(onechar, regexp, text)
 
       character(len=1), intent(in) :: onechar
@@ -213,6 +231,7 @@ contains
       endif
 
   end function charclass
+
 
   logical recursive function onecharclass(class, regexp, text)
 
