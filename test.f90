@@ -139,7 +139,9 @@ print*, "a\d+\., a1.9, ", match("a\d+\.", "a1.9"), "true"
 print*, "a\d+, a1.9, ", match("a\d+", "a1.9"), "true"
 print*, "a, a1.9, ", match("a", "a1.9"), "true"
 
-
+print*, "\\, \, ", match("\\", "\"), "true"
+print*, "\., \, ", match("\.", "\"), "false"
+print*, "., \, ", match(".", "\"), "true"
 
 print*, "F[qpo, FooBar, Stops!"
 print*, match("F[qpo", "FooBar")
