@@ -76,7 +76,7 @@ contains
             elseif (regexp(2:2).eq.'D') then
                 res = starcharclar("^"//numbers, regexp(4:len(regexp)), text)
             else
-                stop("Unrecongised char class shortcut")
+                res = litmatch(regexp(2:len(regexp)), text)
             endif
         elseif (regexp(3:3).eq.'?') then
             if (regexp(2:2).eq.'w') then
@@ -88,7 +88,7 @@ contains
             elseif (regexp(2:2).eq.'D') then
                 res = onecharclass("^"//numbers, regexp(4:len(regexp)), text)
             else
-                stop("Unrecongised char class shortcut")
+                res = litmatch(regexp(2:len(regexp)), text)
             endif
         elseif (regexp(3:3).eq.'+') then
             if (regexp(2:2).eq.'w') then
@@ -100,7 +100,7 @@ contains
             elseif (regexp(2:2).eq.'D') then
                 res = matchhere('\D\D*'//regexp(4:len(regexp)), text)
             else
-                stop("Unrecongised char class shortcut")
+                res = litmatch(regexp(2:len(regexp)), text)
             endif
         else
             if (regexp(2:2).eq.'w') then
@@ -112,7 +112,7 @@ contains
             elseif (regexp(2:2).eq.'D') then
                 res = charclass("^"//numbers, regexp(3:len(regexp)), text)
             else
-                stop("Unrecongised char class shortcut")
+                res = litmatch(regexp(2:len(regexp)), text)
             endif
         endif
     elseif (regexp(2:2).eq."?") then
@@ -140,7 +140,7 @@ contains
 
     character(len=*), intent(in) :: regexp
     character(len=*), intent(in) :: text
-
+    ! FIXME - handle cases of *, ? and + -- without breaking the lit match.
     if (text(1:1).eq.regexp(1:1)) then
         litmatch =  matchhere( regexp(2:len(regexp)), &
                      & text(2:len(text)) )
