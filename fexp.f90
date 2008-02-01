@@ -97,6 +97,9 @@ contains
                 stop("Unrecongised char class shortcut")
             endif
         endif
+    elseif (regexp(2:2).eq."?") then
+        res = onematch(regexp(1:1), & 
+                     & regexp(3:len(regexp)), text)
     elseif (regexp(2:2).eq."*") then
         res = matchstar(regexp(1:1), & 
                      & regexp(3:len(regexp)), text)
@@ -114,6 +117,27 @@ contains
     endif
 
   end function matchhere
+
+  logical recursive function onematch(onechar, regexp, text)
+
+      character(len=1), intent(in) :: onechar
+      character(len=*), intent(in) :: regexp
+      character(len=*), intent(in) :: text
+
+      if ((text(1:1).eq.onechar).or.(onechar.eq.'.')) then
+         if (matchhere(regexp, text(2:len(text)))) then
+            ! One of the char and the rest of the expression
+            onematch = .true.
+         else
+            ! Backtrack to zero of the char and the expression
+            onematch = matchhere(regexp, text)
+         endif
+      else
+         ! Just the rest of the expression also OK
+         onematch = matchhere(regexp, text)
+      endif
+
+  end function onematch
 
   logical recursive function matchstar(starchar, regexp, text) 
 
