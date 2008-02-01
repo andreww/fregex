@@ -58,16 +58,30 @@ contains
             res = charclass(regexp(2:classend), regexp(classend+2:len(regexp)), text)
         endif
     elseif (regexp(1:1).eq.'\') then
-        if (regexp(2:2).eq.'w') then
-            res = charclass(numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
-        elseif (regexp(2:2).eq.'d') then
-            res = charclass(numbers, regexp(3:len(regexp)), text)
-        elseif (regexp(2:2).eq.'W') then
-            res = charclass("^"//numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
-        elseif (regexp(2:2).eq.'D') then
-            res = charclass("^"//numbers, regexp(3:len(regexp)), text)
+        if (regexp(3:3).eq.'*') then
+            if (regexp(2:2).eq.'w') then
+                res = starcharclar(numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'d') then
+                res = starcharclar(numbers, regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'W') then
+                res = starcharclar("^"//numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'D') then
+                res = starcharclar("^"//numbers, regexp(4:len(regexp)), text)
+            else
+                stop("Unrecongised char class shortcut")
+            endif
         else
-            stop("Unrecongised char class shortcut")
+            if (regexp(2:2).eq.'w') then
+                res = charclass(numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
+            elseif (regexp(2:2).eq.'d') then
+                res = charclass(numbers, regexp(3:len(regexp)), text)
+            elseif (regexp(2:2).eq.'W') then
+                res = charclass("^"//numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
+            elseif (regexp(2:2).eq.'D') then
+                res = charclass("^"//numbers, regexp(3:len(regexp)), text)
+            else
+                stop("Unrecongised char class shortcut")
+            endif
         endif
     elseif (regexp(2:2).eq."*") then
         res = matchstar(regexp(1:1), & 
@@ -121,7 +135,9 @@ contains
       character(len=*), intent(in) :: regexp ! after the class
       character(len=*), intent(in) :: text 
 
-      logical :: negate = .false.
+      logical :: negate 
+
+      negate = .false.
 
       if (class(1:1).eq.'^') then 
          negate = .true.
@@ -152,8 +168,11 @@ contains
       character(len=*), intent(in) :: regexp ! after the class
       character(len=*), intent(in) :: text 
 
-      logical :: negate = .false.
+      logical :: negate
       integer :: pos
+
+      negate = .false.
+
 
       if (class(1:1).eq.'^') then 
          negate = .true.
@@ -169,13 +188,13 @@ contains
               starcharclar = .true.
               exit
           elseif ((pos.le.len(text)) &
-                  & .and..not.negate.and. ( &
+                  & .and.(.not.negate).and. ( &
                   &    (scan(text(1:1),class).eq.1) & 
                   & )) then
               pos = pos+1
           elseif ((pos.le.len(text)) &
                   & .and.negate.and. ( &
-                  &    (scan(text(1:1),class).eq.0) & 
+                  &    (scan(text(1:1),class(2:len(class))).eq.0) & 
                   & )) then
               pos = pos+1
           else
