@@ -54,6 +54,8 @@ contains
         if (classend.eq.0) stop("No terminating char class")
         if (regexp(classend+2:classend+2).eq.'*') then
             res = starcharclar(regexp(2:classend), regexp(classend+3:len(regexp)), text)
+        elseif (regexp(classend+2:classend+2).eq.'?') then
+            res = onecharclass(regexp(2:classend), regexp(classend+3:len(regexp)), text)
         elseif (regexp(classend+2:classend+2).eq.'+') then
             res = matchhere('['//regexp(2:classend)//']['//regexp(2:classend)//']*'//regexp(classend+3:len(regexp)), text)
         else
@@ -199,6 +201,55 @@ contains
       endif
 
   end function charclass
+
+  logical recursive function onecharclass(class, regexp, text)
+
+      character(len=*), intent(in) :: class
+      character(len=*), intent(in) :: regexp ! after the class
+      character(len=*), intent(in) :: text 
+
+      logical :: negate 
+
+      negate = .false.
+
+      if (class(1:1).eq.'^') then 
+         negate = .true.
+      endif
+
+      if ((len(class).lt.1).and..not.negate) stop ("Empty char class!") 
+      if ((len(class).lt.2).and.negate) stop ("Empty char class!") 
+  
+      if (.not.negate) then
+          ! not negated
+          if (scan(text(1:1),class).eq.1) then
+             if (matchhere(regexp, text(2:len(text)))) then
+                ! One of the char and the rest of the expression
+                onecharclass = .true.
+             else
+                ! Backtrack to zero of the char and the expression
+                onecharclass = matchhere(regexp, text)
+             endif
+          else
+             ! Just the rest of the expression also OK
+             onecharclass = matchhere(regexp, text)
+          endif
+      else
+          ! Negated
+          if (scan(text(1:1),class(2:len(class))).eq.1) then
+             ! OK if the whole of the rest of the regexp matched everything...
+             onecharclass = matchhere(regexp, text)
+          else
+             if (matchhere(regexp, text(2:len(text)))) then
+                ! Not one of the char and the rest of the expression - OK
+                onecharclass = .true.
+             else
+                ! Backtrack to zero of the char and the expression
+                onecharclass = matchhere(regexp, text)
+             endif
+          endif
+      endif
+
+  end function onecharclass
 
   logical recursive function starcharclar(class, regexp, text)
 
