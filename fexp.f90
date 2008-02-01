@@ -4,7 +4,7 @@ module fexp
 
  character(len=10), parameter :: numbers = '1234567890'
  character(len=26), parameter :: lowercase = 'abcdefghijklmnopqrstuvwxyz'
- character(len=26), parameter :: uppercase = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+ character(len=26), parameter :: uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  character(len=2), parameter :: otherwords = '-_'
 
 contains
@@ -71,6 +71,18 @@ contains
                 res = starcharclar("^"//numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'D') then
                 res = starcharclar("^"//numbers, regexp(4:len(regexp)), text)
+            else
+                stop("Unrecongised char class shortcut")
+            endif
+        elseif (regexp(3:3).eq.'?') then
+            if (regexp(2:2).eq.'w') then
+                res = onecharclass(numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'d') then
+                res = onecharclass(numbers, regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'W') then
+                res = onecharclass("^"//numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'D') then
+                res = onecharclass("^"//numbers, regexp(4:len(regexp)), text)
             else
                 stop("Unrecongised char class shortcut")
             endif
