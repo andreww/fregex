@@ -54,6 +54,8 @@ contains
         if (classend.eq.0) stop("No terminating char class")
         if (regexp(classend+2:classend+2).eq.'*') then
             res = starcharclar(regexp(2:classend), regexp(classend+3:len(regexp)), text)
+        elseif (regexp(classend+2:classend+2).eq.'+') then
+            res = matchhere('['//regexp(2:classend)//']['//regexp(2:classend)//']*'//regexp(classend+3:len(regexp)), text)
         else
             res = charclass(regexp(2:classend), regexp(classend+2:len(regexp)), text)
         endif
@@ -67,6 +69,18 @@ contains
                 res = starcharclar("^"//numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'D') then
                 res = starcharclar("^"//numbers, regexp(4:len(regexp)), text)
+            else
+                stop("Unrecongised char class shortcut")
+            endif
+        elseif (regexp(3:3).eq.'+') then
+            if (regexp(2:2).eq.'w') then
+                res = matchhere('\w\w*'//regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'d') then
+                res = matchhere('\d\d*'//regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'W') then
+                res = matchhere('\W\W*'//regexp(4:len(regexp)), text)
+            elseif (regexp(2:2).eq.'D') then
+                res = matchhere('\D\D*'//regexp(4:len(regexp)), text)
             else
                 stop("Unrecongised char class shortcut")
             endif
@@ -172,7 +186,6 @@ contains
       integer :: pos
 
       negate = .false.
-
 
       if (class(1:1).eq.'^') then 
          negate = .true.
