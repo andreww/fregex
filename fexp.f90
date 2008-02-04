@@ -7,6 +7,7 @@ module fexp
  character(len=26), parameter :: uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  character(len=2), parameter :: otherwords = '-_'
 
+ integer, save :: matchstart, matchlength
 contains
 
  logical function match(regexp, text)
@@ -16,13 +17,19 @@ contains
 
     integer :: pos
 
+    matchstart = 0
+    matchlength = 0
+
     if (regexp(1:1).eq."^") then
         match = matchhere(regexp(2:len(regexp)), text)
+        matchstart = 1
     else
 
         do pos = 1, len(text)
+            matchlength = 0
             if ( matchhere(regexp, text(pos:len(text))) ) then
                 match = .true.
+                matchstart = pos
                 exit
             endif
             match = .false.
@@ -44,8 +51,10 @@ contains
         res = .true.
     elseif (len(regexp).eq.1) then 
         if (text(1:1).eq.regexp(1:1)) then
+                matchlength = matchlength + 1
                 res = .true.
         elseif (regexp(1:1).eq.".") then
+                matchlength = matchlength + 1
                 res = .true.
         elseif ((regexp(1:1).eq."$") &
                 & .and.(len(text).eq.0)) then
@@ -125,9 +134,11 @@ contains
         res = matchhere(regexp(1:1)//regexp(1:1)// & 
                      & '*'//regexp(3:len(regexp)), text)
     elseif (text(1:1).eq.regexp(1:1)) then
+        matchlength = matchlength + 1
         res =  matchhere( regexp(2:len(regexp)), &
                      & text(2:len(text)) )
     elseif (regexp(1:1).eq.".") then
+        matchlength = matchlength + 1
         res =  matchhere( regexp(2:len(regexp)), & 
                      &  text(2:len(text)) )
     else 
@@ -142,6 +153,7 @@ contains
     character(len=*), intent(in) :: text
     ! FIXME - handle cases of *, ? and + -- without breaking the lit match.
     if (text(1:1).eq.regexp(1:1)) then
+        matchlength = matchlength + 1
         litmatch =  matchhere( regexp(2:len(regexp)), &
                      & text(2:len(text)) )
     else
@@ -159,9 +171,11 @@ contains
       if ((text(1:1).eq.onechar).or.(onechar.eq.'.')) then
          if (matchhere(regexp, text(2:len(text)))) then
             ! One of the char and the rest of the expression
+            matchlength = matchlength + 1
             onematch = .true.
          else
             ! Backtrack to zero of the char and the expression
+            ! No char to add here.
             onematch = matchhere(regexp, text)
          endif
       else
@@ -183,6 +197,7 @@ contains
       do 
           if (matchhere(regexp, text(pos:len(text)))) then
               matchstar = .true.
+              matchlength = matchlength + pos
               exit
           elseif ((pos.le.len(text)) &
                   & .and. ( &
@@ -218,6 +233,7 @@ contains
   
       if (.not.negate) then
           if (scan(text(1:1),class).eq.1) then
+              matchlength = matchlength + 1
               charclass = matchhere(regexp, text(2:len(text)))
           else
               charclass = .false.
@@ -226,6 +242,7 @@ contains
           if (scan(text(1:1),class(2:len(class))).eq.1) then
               charclass = .false.
           else
+              matchlength = matchlength + 1
               charclass = matchhere(regexp, text(2:len(text)))
           endif
       endif
@@ -255,6 +272,7 @@ contains
           if (scan(text(1:1),class).eq.1) then
              if (matchhere(regexp, text(2:len(text)))) then
                 ! One of the char and the rest of the expression
+                matchlength = matchlength + 1
                 onecharclass = .true.
              else
                 ! Backtrack to zero of the char and the expression
@@ -266,8 +284,9 @@ contains
           endif
       else
           ! Negated
-          if (scan(text(1:1),class(2:len(class))).eq.1) then
+          if (scan(text(1:1),class(2:len(class))).eq.0) then
              ! OK if the whole of the rest of the regexp matched everything...
+             matchlength = matchlength + 1
              onecharclass = matchhere(regexp, text)
           else
              if (matchhere(regexp, text(2:len(text)))) then
@@ -305,6 +324,7 @@ contains
       do 
           if (matchhere(regexp, text(pos:len(text)))) then
               starcharclar = .true.
+              matchlength = matchlength + pos - 1
               exit
           elseif ((pos.le.len(text)) &
                   & .and.(.not.negate).and. ( &
