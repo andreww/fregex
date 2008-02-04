@@ -7,7 +7,7 @@ module regex
   public :: new_re, match_re, sub_re
 
   type token 
-    character, lem=(1) :: literal
+    character (len=1) :: literal
     integer :: ttype
   end type
 
