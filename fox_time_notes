@@ -1,0 +1,27 @@
+To make time_fox to the following (very crap hack but it works for now)
+(1) untar, configure and make fox
+(2) Set up some links:
+ln -s FoX-3.1.2/common/* .
+ln -s FoX-3.1.2/objs/finclude/m_pxf_abort_flush.mod .
+ln -s FoX-3.1.2/objs/lib/libfsys.a .
+(3) Compile the test code
+g95 -c  time_fox.f90
+(4)
+link everything(!)
+g95 -o time_fox m_*.o *.a time_fox.o
+I'm sure there is a better way!
+
+
+diopside:~/Code/Fexp andreww$ time ./time_fox  
+
+real    1m4.143s
+user    1m4.123s
+sys     0m0.019s
+
+diopside:~/Code/Fexp andreww$ time ./time_regex
+
+real    1m10.706s
+user    1m10.649s
+sys     0m0.023s
+
+
