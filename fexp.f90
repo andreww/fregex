@@ -45,9 +45,12 @@ contains
     
     integer :: classend 
 
+    print*, "in matchhere"
+
     if (len(regexp).eq.0) then
         ! Assuming idiot input is protected by caller
         ! this is needed to simplify the other recursive functions.
+        print*, "len 0 regex"
         res = .true.
     elseif (len(regexp).eq.1) then 
         if (text(1:1).eq.regexp(1:1)) then
@@ -124,6 +127,15 @@ contains
                 res = litmatch(regexp(2:len(regexp)), text)
             endif
         endif
+    elseif (regexp(2:3).eq."??") then
+        res = onelazymatch(regexp(1:1), & 
+                     & regexp(4:len(regexp)), text)
+    elseif (regexp(2:3).eq."*?") then
+        res = matchlazystar(regexp(1:1), & 
+                     & regexp(4:len(regexp)), text)
+    elseif (regexp(2:3).eq."+?") then
+        res = matchhere(regexp(1:1)//regexp(1:1)// & 
+                     & '*?'//regexp(4:len(regexp)), text)
     elseif (regexp(2:2).eq."?") then
         res = onematch(regexp(1:1), & 
                      & regexp(3:len(regexp)), text)
@@ -192,27 +204,83 @@ contains
       character(len=*), intent(in) :: text
 
       integer :: pos
+     ! TODO - looking at this... 
+      pos = verify(text, starchar) ! This is the last character not 
+                                   ! matching the star.
+      print*, "in matchstar with text: ", text, " char: ", starchar, " regex: ", regexp, " and pos: ", pos
+      if (pos.eq.0) then
+          ! This is all chars in text match verify
+          matchstar = matchhere(regexp, '')
+          if (matchstar) matchlength = matchlength + len(text)
+      else
+          ! How long can we be and still match?
+          do 
+              if (matchhere(regexp, text(pos:len(text)))) then
+                 matchstar = .true.
+                 matchlength = matchlength + pos -1
+                 exit
+              elseif (pos.ge.1) then
+                 pos = pos-1
+              else
+                  matchstar = .false.
+                  exit
+              endif
+           enddo
+      endif
+
+  end function matchstar
+
+  logical recursive function onelazymatch(onechar, regexp, text)
+
+      character(len=1), intent(in) :: onechar
+      character(len=*), intent(in) :: regexp
+      character(len=*), intent(in) :: text
+
+      if ((text(1:1).eq.onechar).or.(onechar.eq.'.')) then
+         if (matchhere(regexp, text(2:len(text)))) then
+            ! One of the char and the rest of the expression
+            matchlength = matchlength + 1
+            onelazymatch = .true.
+         else
+            ! Backtrack to zero of the char and the expression
+            ! No char to add here.
+            onelazymatch = matchhere(regexp, text)
+         endif
+      else
+         ! Just the rest of the expression also OK
+         onelazymatch = matchhere(regexp, text)
+      endif
+
+  end function onelazymatch
+
+  logical recursive function matchlazystar(starchar, regexp, text) 
+
+      character(len=1), intent(in) :: starchar
+      character(len=*), intent(in) :: regexp
+      character(len=*), intent(in) :: text
+
+      integer :: pos
       
       pos = 1
       do 
           if (matchhere(regexp, text(pos:len(text)))) then
-              matchstar = .true.
-              matchlength = matchlength + pos
+              matchlazystar = .true.
+              matchlength = matchlength + pos - 1 
               exit
           elseif ((pos.le.len(text)) &
                   & .and. ( &
                   &    (text(pos:pos).eq.starchar) & 
                   &    .or.(starchar.eq.".") & 
                   & )) then
-              pos = pos+1
+              pos = pos + 1
           else
-              matchstar = .false.
+              matchlazystar = .false.
               exit
           endif
       enddo
 
 
-  end function matchstar
+  end function matchlazystar
 
   logical recursive function charclass(class, regexp, text)
 
