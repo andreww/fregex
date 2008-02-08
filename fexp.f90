@@ -204,10 +204,14 @@ contains
       character(len=*), intent(in) :: text
 
       integer :: pos
-     ! TODO - looking at this... 
-      pos = verify(text, starchar) ! This is the last character not 
-                                   ! matching the star.
-      print*, "in matchstar with text: ", text, " char: ", starchar, " regex: ", regexp, " and pos: ", pos
+
+      if (starchar.eq.'.') then
+          pos = 0 ! Because anything will match the dot.
+      else
+          pos = verify(text, starchar) ! This is the last character not 
+                                       ! matching the star.
+      endif
+
       if (pos.eq.0) then
           ! This is all chars in text match verify
           matchstar = matchhere(regexp, '')
@@ -220,7 +224,7 @@ contains
                  matchlength = matchlength + pos -1
                  exit
               elseif (pos.ge.1) then
-                 pos = pos-1
+                 pos = pos - 1
               else
                   matchstar = .false.
                   exit
