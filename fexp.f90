@@ -8,9 +8,10 @@ module fexp
  character(len=2), parameter :: otherwords = '-_'
 
  integer, save :: matchstart, matchlength
+
 contains
 
- logical function match(regexp, text)
+  logical function match(regexp, text)
 
     character(len=*), intent(in) :: regexp
     character(len=*), intent(in) :: text
@@ -38,6 +39,8 @@ contains
 
   end function match
 
+
+
   logical recursive function matchhere(regexp, text) result(res)
 
     character(len=*), intent(in) :: regexp
@@ -45,14 +48,15 @@ contains
     
     integer :: classend 
 
-    print*, "in matchhere"
 
     if (len(regexp).eq.0) then
-        ! Assuming idiot input is protected by caller
+        ! Assuming empty input is protected by caller
         ! this is needed to simplify the other recursive functions.
-        print*, "len 0 regex"
         res = .true.
+
     elseif (len(regexp).eq.1) then 
+        ! Almost at the end of the match - just need to check if we are at the end 
+        ! and watch out for '$' terminating condition.
         if (text(1:1).eq.regexp(1:1)) then
                 matchlength = matchlength + 1
                 res = .true.
@@ -65,44 +69,63 @@ contains
         else 
                 res = .false.
         endif
+
     elseif (regexp(1:1).eq.'[') then
+        ! This is the start of a character class... so find the end.
         classend = index(regexp(2:len(regexp)), ']')
         if (classend.eq.0) stop("No terminating char class")
+
+        ! Check for modifiers at the end.
         if (regexp(classend+2:classend+2).eq.'*') then
             res = starcharclar(regexp(2:classend), regexp(classend+3:len(regexp)), text)
         elseif (regexp(classend+2:classend+2).eq.'?') then
             res = onecharclass(regexp(2:classend), regexp(classend+3:len(regexp)), text)
         elseif (regexp(classend+2:classend+2).eq.'+') then
-            res = matchhere('['//regexp(2:classend)//']['//regexp(2:classend)//']*'//regexp(classend+3:len(regexp)), text)
+            res = matchhere('['//regexp(2:classend)//'][' & 
+                            & //regexp(2:classend)//']*' & 
+                            & //regexp(classend+3:len(regexp)), text)
         else
             res = charclass(regexp(2:classend), regexp(classend+2:len(regexp)), text)
         endif
+
     elseif (regexp(1:1).eq.'\') then
+        ! This is the start of a shortcut or escaped character. 
+        ! But before worrying about what it is - check for *, ? and + after it.
+
         if (regexp(3:3).eq.'*') then
+            ! Escaped something followed by a star
             if (regexp(2:2).eq.'w') then
-                res = starcharclar(numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
+                res = starcharclar(numbers//lowercase//uppercase//otherwords, & 
+                                   &  regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'d') then
                 res = starcharclar(numbers, regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'W') then
-                res = starcharclar("^"//numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
+                res = starcharclar("^"//numbers//lowercase//uppercase//otherwords, & 
+                                   & regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'D') then
                 res = starcharclar("^"//numbers, regexp(4:len(regexp)), text)
             else
                 res = litmatch(regexp(2:len(regexp)), text)
             endif
+
         elseif (regexp(3:3).eq.'?') then
+            ! Escaped something followed by a question mark
             if (regexp(2:2).eq.'w') then
-                res = onecharclass(numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
+                res = onecharclass(numbers//lowercase//uppercase//otherwords, & 
+                                   & regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'d') then
                 res = onecharclass(numbers, regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'W') then
-                res = onecharclass("^"//numbers//lowercase//uppercase//otherwords, regexp(4:len(regexp)), text)
+                res = onecharclass("^"//numbers//lowercase//uppercase//otherwords, & 
+                                   &  regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'D') then
                 res = onecharclass("^"//numbers, regexp(4:len(regexp)), text)
             else
                 res = litmatch(regexp(2:len(regexp)), text)
             endif
+
         elseif (regexp(3:3).eq.'+') then
+            ! Escaped something followed by a plus
             if (regexp(2:2).eq.'w') then
                 res = matchhere('\w\w*'//regexp(4:len(regexp)), text)
             elseif (regexp(2:2).eq.'d') then
@@ -114,19 +137,25 @@ contains
             else
                 res = litmatch(regexp(2:len(regexp)), text)
             endif
+
         else
+            ! We just have to worry about the escaped char
             if (regexp(2:2).eq.'w') then
-                res = charclass(numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
+                res = charclass(numbers//lowercase//uppercase//otherwords, & 
+                               & regexp(3:len(regexp)), text)
             elseif (regexp(2:2).eq.'d') then
                 res = charclass(numbers, regexp(3:len(regexp)), text)
             elseif (regexp(2:2).eq.'W') then
-                res = charclass("^"//numbers//lowercase//uppercase//otherwords, regexp(3:len(regexp)), text)
+                res = charclass("^"//numbers//lowercase//uppercase//otherwords, & 
+                               & regexp(3:len(regexp)), text)
             elseif (regexp(2:2).eq.'D') then
                 res = charclass("^"//numbers, regexp(3:len(regexp)), text)
             else
                 res = litmatch(regexp(2:len(regexp)), text)
             endif
         endif
+
+    ! Minimum length quantifiers
     elseif (regexp(2:3).eq."??") then
         res = onelazymatch(regexp(1:1), & 
                      & regexp(4:len(regexp)), text)
@@ -136,6 +165,8 @@ contains
     elseif (regexp(2:3).eq."+?") then
         res = matchhere(regexp(1:1)//regexp(1:1)// & 
                      & '*?'//regexp(4:len(regexp)), text)
+
+    ! Maximum length quantifiers 
     elseif (regexp(2:2).eq."?") then
         res = onematch(regexp(1:1), & 
                      & regexp(3:len(regexp)), text)
@@ -145,19 +176,27 @@ contains
     elseif (regexp(2:2).eq."+") then
         res = matchhere(regexp(1:1)//regexp(1:1)// & 
                      & '*'//regexp(3:len(regexp)), text)
+
+    ! Now check the character (should call litmatch I suppose.
     elseif (text(1:1).eq.regexp(1:1)) then
         matchlength = matchlength + 1
         res =  matchhere( regexp(2:len(regexp)), &
                      & text(2:len(text)) )
+
+    ! And a dot is always OK
     elseif (regexp(1:1).eq.".") then
         matchlength = matchlength + 1
         res =  matchhere( regexp(2:len(regexp)), & 
                      &  text(2:len(text)) )
+
+    ! Otherwise it does not match
     else 
         res = .false.
     endif
 
   end function matchhere
+
+
 
   logical recursive function litmatch(regexp, text)
 
@@ -173,6 +212,8 @@ contains
     endif
 
   end function litmatch
+
+
 
   logical recursive function onematch(onechar, regexp, text)
 
@@ -196,6 +237,8 @@ contains
       endif
 
   end function onematch
+
+
 
   logical recursive function matchstar(starchar, regexp, text) 
 
@@ -257,6 +300,8 @@ contains
 
   end function onelazymatch
 
+
+
   logical recursive function matchlazystar(starchar, regexp, text) 
 
       character(len=1), intent(in) :: starchar
@@ -285,6 +330,8 @@ contains
 
 
   end function matchlazystar
+
+
 
   logical recursive function charclass(class, regexp, text)
 
@@ -320,6 +367,7 @@ contains
       endif
 
   end function charclass
+
 
 
   logical recursive function onecharclass(class, regexp, text)
@@ -372,6 +420,8 @@ contains
       endif
 
   end function onecharclass
+
+
 
   logical recursive function starcharclar(class, regexp, text)
 
