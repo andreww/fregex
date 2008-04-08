@@ -35,7 +35,7 @@ while (<>) {
 
 sub runtest {
 	my ($text, $regex) = @_;
-	my $result = `../regex_test '$regex' '$text'`;
+	my $result = `./regex_test '$regex' '$text'`;
 	chomp($result);
 	$result =~ s/^\s+(.*)/$1/;
 	return $result;
