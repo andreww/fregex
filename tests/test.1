@@ -1,0 +1,107 @@
+Text: aaaaaaa
+Regex: a
+Match: T 0s: 1 0l: 1
+Regex: aa
+Match: T 0s: 1 0l: 2
+Regex: aaa
+Match: T 0s: 1 0l: 3
+Regex: aaaa
+Match: T 0s: 1 0l: 4
+Regex: aaaaa
+Match: T 0s: 1 0l: 5
+Regex: aaaaaa
+Match: T 0s: 1 0l: 6 
+Regex: aaaaaaa
+Match: T 0s: 1 0l: 7 
+Regex: aaaaaaaa
+Match: F
+
+Text: FooBar
+Regex: Foo
+Match: T 0s: 1 0l: 3
+Regex: Poo
+Match: F
+Regex: Bar
+Match: T 0s: 4 0l: 3
+Regex: Par
+Match: F
+Regex: ooB
+Match: T 0s: 2 0l: 3
+Regex: oo
+Match: T 0s: 2 0l: 2
+
+Text: Foo
+Regex: Foo
+Match: T 0s: 1 0l: 3
+Regex: Fo
+Match: T 0s: 1 0l: 2
+
+Text: Fo
+Regex: Foo
+Match: F
+
+Text: FooBar
+Regex: .
+Match: T 0s: 1 0l: 1
+Regex: P.
+Match: F
+Regex: ^Foo
+Match: T 0s: 1 0l: 3
+Regex: ^Bar
+Match: F
+Regex: Foo$
+Match: F
+Regex: Bar$
+Match: T 0s: 4 0l: 3
+Regex: .*o
+Match: T 0s: 1 0l: 3
+Regex: o*o
+Match: T 0s: 2 0l: 2
+Regex: P*o
+Match: T 0s: 2 0l: 1
+Regex: Fo*o
+Match: T 0s: 1 0l: 3
+Regex: Po*o
+Match: F
+Regex: .+o
+Match: T 0s: 1 0l: 3
+Regex: o+o
+Match: T 0s: 2 0l: 2
+Regex: P+o
+Match: F
+Regex: Fo+o
+Match: T 0s: 1 0l: 3
+Regex: Po+o
+Match: F
+Regex: .?o
+Match: T 0s: 1 0l: 2
+Regex: o?o
+Match: T 0s: 2 0l: 1
+Regex: P?o
+Match: T 0s: 2 0l: 1
+Regex: Fo?o
+Match: T 0s: 1 0l: 3
+Regex: Po?o
+Match: F
+Regex: F[po]o
+Match: T 0s: 1 0l: 3
+Regex: F[op]o
+Match: T 0s: 1 0l: 3
+Regex: F[qp]o
+Match: F
+Regex: F[^po]o
+Match: F
+Regex: F[^op]o
+Match: F
+Regex: F[^qp]o
+Match: T 0s: 1 0l: 3
+Regex: F\do
+Match: F
+Regex: F\wo
+Match: T 0s: 1 0l: 3
+Regex: F\Do
+Match: T 0s: 1 0l: 3
+Regex: F\Wo
+Match: F
+Regex: F[po]*o
+Match: T 0s: 1 0l: 2
