@@ -10,10 +10,12 @@ program regex_test
     if (command_argument_count().eq.2) then
         call get_command_argument(1, regex)
         call get_command_argument(2, text)
-        print*, match(trim(regex), trim(text))
-        print*, "Match started at ", matchstart, " and was ",  & 
-               & matchlength, " long"
-    else
+        if (match(trim(regex), trim(text))) then
+            print*, "Match: T 0s:", matchstart, "0l:", matchlength
+        else
+            print*, "Match: F"
+        endif
+    else 
         stop("regex_test error: number of arguments should be exactly 2!")
     endif
 
