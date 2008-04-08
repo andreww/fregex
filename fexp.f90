@@ -255,25 +255,18 @@ contains
                                        ! matching the star.
       endif
 
-      if (pos.eq.0) then
-          ! This is all chars in text match verify
-          matchstar = matchhere(regexp, '')
-          if (matchstar) matchlength = matchlength + len(text)
-      else
-          ! How long can we be and still match?
-          do 
-              if (matchhere(regexp, text(pos:len(text)))) then
-                 matchstar = .true.
-                 matchlength = matchlength + pos -1
-                 exit
-              elseif (pos.ge.1) then
-                 pos = pos - 1
-              else
-                  matchstar = .false.
-                  exit
-              endif
-           enddo
-      endif
+      do 
+          if (matchhere(regexp, text(pos:len(text)))) then
+             matchstar = .true.
+             matchlength = matchlength + pos -1
+             exit
+          elseif (pos.ge.1) then
+             pos = pos - 1
+          else
+              matchstar = .false.
+              exit
+          endif
+       enddo
 
   end function matchstar
 
@@ -409,13 +402,8 @@ contains
              matchlength = matchlength + 1
              onecharclass = matchhere(regexp, text)
           else
-             if (matchhere(regexp, text(2:len(text)))) then
-                ! Not one of the char and the rest of the expression - OK
-                onecharclass = .true.
-             else
-                ! Backtrack to zero of the char and the expression
-                onecharclass = matchhere(regexp, text)
-             endif
+             ! Ok if we can ignore the charclass and stull match all the text.
+             onecharclass = matchhere(regexp, text)
           endif
       endif
 
