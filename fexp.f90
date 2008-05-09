@@ -429,6 +429,8 @@ contains
       if ((len(class).lt.1).and..not.negate) stop ("Empty char class!") 
       if ((len(class).lt.2).and.negate) stop ("Empty char class!") 
   
+!FIXME: Is this doing lazy evaluation - should it do greedy evaluation? Can 
+!       I reuse matchstar with a bit of effort? Do I need lazy evaluation?
       
       pos = 1
       do 

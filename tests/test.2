@@ -1,106 +1,221 @@
-Regex: F\do", "F5oBar"), "true"
-Match: T 0s: 1 0l: 2
-Regex: F\wo", "F5oBar"), "true"
-Match: T 0s: 1 0l: 2
+Text: F5oBar
+Regex: F\do
+Match: T 0s: 1 0l: 3
+Regex: F\wo
+Match: T 0s: 1 0l: 3
+Regex: F\Do
+Match: F
+Regex: F\Wo
+Match: F
+Regex: F[56]*o
+Match: T 0s: 1 0l: 3
+Regex: F[46]*o
+Match: F
+Regex: F[46]*5, F5oBar, ", match("F[46]*5", "F5oBar"), "true"
+Regex: F[46]*5o, F5oBar, ", match("F[46]*5o", "F5oBar"), "true"
 
-F\Do", "F5oBar"), "false"
-F\Wo, F5oBar, ", match("F\Wo", "F5oBar"), "false"
-F[56]*o, F5oBar, ", match("F[56]*o", "F5oBar"), "true"
-F[46]*o, F5oBar, ", match("F[46]*o", "F5oBar"), "false"
-F[46]*5, F5oBar, ", match("F[46]*5", "F5oBar"), "true"
-print*, "F[46]*5o, F5oBar, ", match("F[46]*5o", "F5oBar"), "true"
-print*, "F[op]*o, FooBar, ", match("F[op]*o", "FooBar"), "true"
-print*, "F[qp]*o, FooBar, ", match("F[qp]*o", "FooBar"), "true"
-print*, "P[qp]*o, FooBar, ", match("P[qp]*o", "FooBar"), "false"
-print*, "F[^po]*o, FooBar, ", match("F[^po]*o", "FooBar"), "true"
-print*, "F[^op]*o, FooBar, ", match("F[^op]*o", "FooBar"), "true"
-print*, "F[^qp]*o, FooBar, ", match("F[^qp]*o", "FooBar"), "true"
-print*, "P[^qp]*o, FooBar, ", match("P[^qp]*o", "FooBar"), "false"
-print*, "F\d*o, FooBar, ", match("F\d*o", "FooBar"), "true"
-print*, "F\w*o, FooBar, ", match("F\w*o", "FooBar"), "true"
-print*, "F\d*o, F5oBar, ", match("F\d*o", "F5oBar"), "true"
-print*, "F\w*o, F5oBar, ", match("F\w*o", "F5oBar"), "true"
-print*, "F\D*o, FooBar, ", match("F\D*o", "FooBar"), "true"
-print*, "F\W*o, FooBar, ", match("F\W*o", "FooBar"), "true"
-print*, "F\D*o, F5oBar, ", match("F\D*o", "F5oBar"), "false"
-print*, "F\D*5, F5oBar, ", match("F\D*5", "F5oBar"), "true"
-print*, "F\W*o, F5oBar, ", match("F\W*o", "F5oBar"), "false"
-print*, "F\W*5, F5oBar, ", match("F\W*5", "F5oBar"), "true"
-print*, "F[po]?o, FooBar, ", match("F[po]?o", "FooBar"), "true"
-print*, "F[56]?o, F5oBar, ", match("F[56]?o", "F5oBar"), "true"
-print*, "F[46]?o, F5oBar, ", match("F[46]?o", "F5oBar"), "false"
-print*, "F[46]?5, F5oBar, ", match("F[46]?5", "F5oBar"), "true"
-print*, "F[46]?5o, F5oBar, ", match("F[46]?5o", "F5oBar"), "true"
-print*, "F[op]?o, FooBar, ", match("F[op]?o", "FooBar"), "true"
-print*, "F[qp]?o, FooBar, ", match("F[qp]?o", "FooBar"), "true"
-print*, "P[qp]?o, FooBar, ", match("P[qp]?o", "FooBar"), "false"
-print*, "F[^po]?o, FooBar, ", match("F[^po]?o", "FooBar"), "true"
-print*, "F[^op]?o, FooBar, ", match("F[^op]?o", "FooBar"), "true"
-print*, "F[^qp]?o, FooBar, ", match("F[^qp]?o", "FooBar"), "true"
-print*, "P[^qp]?o, FooBar, ", match("P[^qp]?o", "FooBar"), "false"
-print*, "F\d?o, FooBar, ", match("F\d?o", "FooBar"), "true"
-print*, "F\w?o, FooBar, ", match("F\w?o", "FooBar"), "true"
-print*, "F\d?o, F5oBar, ", match("F\d?o", "F5oBar"), "true"
-print*, "F\w?o, F5oBar, ", match("F\w?o", "F5oBar"), "true"
-print*, "F\D?o, FooBar, ", match("F\D?o", "FooBar"), "true"
-print*, "F\W?o, FooBar, ", match("F\W?o", "FooBar"), "true"
-print*, "F\D?o, F5oBar, ", match("F\D?o", "F5oBar"), "false"
-print*, "F\D?5, F5oBar, ", match("F\D?5", "F5oBar"), "true"
-print*, "F\W?o, F5oBar, ", match("F\W?o", "F5oBar"), "false"
-print*, "F\W?5, F5oBar, ", match("F\W?5", "F5oBar"), "true"
-print*, "F[po]+o, FooBar, ", match("F[po]+o", "FooBar"), "true"
-print*, "F[56]+o, F5oBar, ", match("F[56]+o", "F5oBar"), "true"
-print*, "F[46]+o, F5oBar, ", match("F[46]+o", "F5oBar"), "false"
-print*, "F[46]+5, F5oBar, ", match("F[46]+5", "F5oBar"), "false"
-print*, "F[46]+5o, F5oBar, ", match("F[46]+5o", "F5oBar"), "false"
-print*, "F[op]+o, FooBar, ", match("F[op]+o", "FooBar"), "true"
-print*, "F[qp]+o, FooBar, ", match("F[qp]+o", "FooBar"), "false"
-print*, "P[qp]+o, FooBar, ", match("P[qp]+o", "FooBar"), "false"
-print*, "F[^po]+o, FooBar, ", match("F[^po]+o", "FooBar"), "false"
-print*, "F[^op]+o, FooBar, ", match("F[^op]+o", "FooBar"), "false"
-print*, "F[^qp]+o, FooBar, ", match("F[^qp]+o", "FooBar"), "true"
-print*, "P[^qp]+o, FooBar, ", match("P[^qp]+o", "FooBar"), "false"
-print*, "F\d+o, FooBar, ", match("F\d+o", "FooBar"), "false"
-print*, "F\w+o, FooBar, ", match("F\w+o", "FooBar"), "true"
-print*, "F\d+o, F5oBar, ", match("F\d+o", "F5oBar"), "true"
-print*, "F\w+o, F5oBar, ", match("F\w+o", "F5oBar"), "true"
-print*, "F\D+o, FooBar, ", match("F\D+o", "FooBar"), "true"
-print*, "F\W+o, FooBar, ", match("F\W+o", "FooBar"), "false"
-print*, "F\D+o, F5oBar, ", match("F\D+o", "F5oBar"), "false"
-print*, "F\D+5, F5oBar, ", match("F\D+5", "F5oBar"), "false"
-print*, "F\W+o, F5oBar, ", match("F\W+o", "F5oBar"), "false"
-print*, "F\W+5, F5oBar, ", match("F\W+5", "F5oBar"), "false"
-print*, "\d+\.\d*, 1.9, ", match("\d+\.\d*", "1.9"), "true"
-print*, "\d+\.\d*, 1.99, ", match("\d+\.\d*", "1.99"), "true"
-print*, "\d+\.\d*, 1.999, ", match("\d+\.\d*", "1.999"), "true"
-print*, "\d+\.\d*, 1.9999, ", match("\d+\.\d*", "1.9999"), "true"
-print*, "\d+\.\d*, 1.99999, ", match("\d+\.\d*", "1.99999"), "true"
-print*, "\d+\.\d*, 11.99999, ", match("\d+\.\d*", "11.99999"), "true"
-print*, "\d+\.\d*, 111.99999, ", match("\d+\.\d*", "111.99999"), "true"
-print*, "\d+\.\d*, 1111.99999, ", match("\d+\.\d*", "1111.99999"), "true"
-print*, "\d+\.\d*, 11111.99999, ", match("\d+\.\d*", "11111.99999"), "true"
-print*, "\d+\.\d*, 111111.99999, ", match("\d+\.\d*", "111111.99999"), "true"
-print*, "^\d+\.\d*, 1.9, ", match("^\d+\.\d*", "1.9"), "true"
-print*, "^\d+\.\d*, 1.99, ", match("^\d+\.\d*", "1.99"), "true"
-print*, "^\d+\.\d*, 1.999, ", match("^\d+\.\d*", "1.999"), "true"
-print*, "^\d+\.\d*, 1.9999, ", match("^\d+\.\d*", "1.9999"), "true"
-print*, "^\d+\.\d*, 1.99999, ", match("^\d+\.\d*", "1.99999"), "true"
-print*, "^\d+\.\d*, 11.99999, ", match("^\d+\.\d*", "11.99999"), "true"
-print*, "^\d+\.\d*, 111.99999, ", match("^\d+\.\d*", "111.99999"), "true"
-print*, "^\d+\.\d*, 1111.99999, ", match("^\d+\.\d*", "1111.99999"), "true"
-print*, "^\d+\.\d*, 11111.99999, ", match("^\d+\.\d*", "11111.99999"), "true"
-print*, "^\d+\.\d*, 111111.99999, ", match("^\d+\.\d*", "111111.99999"), "true"
+Text: FooBar
+Regex: F[op]*o, FooBar, ", match("F[op]*o", "FooBar"), "true"
+Regex: F[qp]*o, FooBar, ", match("F[qp]*o", "FooBar"), "true"
 
-print*, "a\d+\.\d*, a1.9, ", match("a\d+\.\d*", "a1.9"), "true"
-print*, "a\d+\., a1.9, ", match("a\d+\.", "a1.9"), "true"
-print*, "a\d+, a1.9, ", match("a\d+", "a1.9"), "true"
-print*, "a, a1.9, ", match("a", "a1.9"), "true"
+Regex: P[qp]*o
+Match: F
+Regex: F[^po]*o, FooBar, ", match("F[^po]*o", "FooBar"), "true"
+Regex: F[^op]*o, FooBar, ", match("F[^op]*o", "FooBar"), "true"
+Regex: F[^qp]*o, FooBar, ", match("F[^qp]*o", "FooBar"), "true"
+Regex: P[^qp]*o
+Match: F
+Regex: F\d*o, FooBar, ", match("F\d*o", "FooBar"), "true"
+Regex: F\w*o, FooBar, ", match("F\w*o", "FooBar"), "true"
+Regex: F\d*o, F5oBar, ", match("F\d*o", "F5oBar"), "true"
+Regex: F\w*o, F5oBar, ", match("F\w*o", "F5oBar"), "true"
+Regex: F\D*o, FooBar, ", match("F\D*o", "FooBar"), "true"
+Regex: F\W*o, FooBar, ", match("F\W*o", "FooBar"), "true"
 
-print*, '\\, \, ', match("\\", "\"), "true"
-print*, "\., \, ", match("\.", "\"), "false"
-print*, "., \, ", match(".", "\"), "true"
+Text: F5oBar
+Regex: F\D*o
+Match: F
+Regex: F\D*5, F5oBar, ", match("F\D*5", "F5oBar"), "true"
+Regex: F\W*o
+Match: F
+Regex: F\W*5, F5oBar, ", match("F\W*5", "F5oBar"), "true"
 
-print*, "F[qpo, FooBar, Stops!"
-print*, match("F[qpo", "FooBar")
+Text: FooBar
+Regex: F[po]?o, FooBar, ", match("F[po]?o", "FooBar"), "true"
 
-end program test
+Text: F5oBar
+Regex: F[56]?o, F5oBar, ", match("F[56]?o", "F5oBar"), "true"
+Regex: F[46]?o
+Match: F
+Regex: F[46]?5, F5oBar, ", match("F[46]?5", "F5oBar"), "true"
+Regex: F[46]?5o, F5oBar, ", match("F[46]?5o", "F5oBar"), "true"
+
+Text: FooBar
+Regex: F[op]?o, FooBar, ", match("F[op]?o", "FooBar"), "true"
+Regex: F[qp]?o, FooBar, ", match("F[qp]?o", "FooBar"), "true"
+Regex: P[qp]?o
+Match: F
+Regex: F[^po]?o, FooBar, ", match("F[^po]?o", "FooBar"), "true"
+Regex: F[^op]?o, FooBar, ", match("F[^op]?o", "FooBar"), "true"
+Regex: F[^qp]?o, FooBar, ", match("F[^qp]?o", "FooBar"), "true"
+Regex: P[^qp]?o
+Match: F
+Regex: F\d?o, FooBar, ", match("F\d?o", "FooBar"), "true"
+Regex: F\w?o, FooBar, ", match("F\w?o", "FooBar"), "true"
+
+Text: F5oBar
+Regex: F\d?o
+Match: T s0: 1 l0: 3
+Regex: F\w?o
+Match: T s0: 1 l0: 3
+
+Text: FooBar
+Regex: F\D?o
+Match: T s0: 1 l0: 3
+Regex: F\W?o
+Match: T s0: 1 l0: 2
+
+Text: F5oBar
+Regex: F\D?o
+Match: F
+Regex: F\D?5
+Match: T s0: 1 l0: 2
+Regex: F\W?o
+Match: F
+Regex: F\W?5
+Match: T s0: 1 l0: 2
+Regex: F[56]+o
+Match: T s0: 1 l0: 3
+Regex: F[46]+o
+Match: F
+Regex: F[46]+5
+Match: F
+Regex: F[46]+5o
+Match: F
+
+Text: FooBar
+Regex: F[po]+o
+Match: T s0: 1 l0: 3
+Regex: F[op]+o
+Match: T s0: 1 l0: 3
+Regex: F[qp]+o
+Match: F
+Regex: P[qp]+o
+Match: F
+Regex: F[^po]+o
+Match: F
+Regex: F[^op]+o
+Match: F
+Regex: F[^qp]+o
+Match: T s0: 1 l0: 3
+Regex: P[^qp]+o
+Match: F
+Regex: F\d+o
+Match: F
+Regex: F\w+o
+Match: T s0: 1 l0: 3
+
+Text: F5oBar
+Regex: F\d+o
+Match: T s0: 1 l0: 3
+Regex: F\w+o
+Match: T s0: 1 l0: 3
+
+Text: FooBar
+Regex: F\D+o
+Match: T s0: 1 l0: 3
+Regex: F\W+o
+Match: F
+
+Text: F5oBar
+Regex: F\D+o
+Match: F
+Regex: F\D+5
+Match: F
+Regex: F\W+o
+Match: F
+Regex: F\W+5
+Match: F
+
+Text: 1.9
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 3
+Text: 1.99
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 4
+Text: 1.999
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 5
+Text: 1.9999
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 6
+Text: 1.99999
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 7
+Text: 11.99999
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 8
+Text: 111.99999
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 9
+Text: 1111.99999
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 10
+Text: 11111.99999
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 11
+Text: 111111.99999
+Regex: \d+\.\d*
+Match: T 0s: 1 0l: 12
+
+Text: 1.9
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 3
+Text: 1.99
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 4
+Text: 1.999
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 5
+Text: 1.9999
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 6
+Text: 1.99999
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 7
+Text: 11.99999
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 8
+Text: 111.99999
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 9
+Text: 1111.99999
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 10
+Text: 11111.99999
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 11
+Text: 111111.99999
+Regex: ^\d+\.\d*
+Match: T 0s: 1 0l: 12
+
+Text: a1.9
+Regex: a\d+\.\d*
+Match: 0s: 1 0l: 4
+Regex: a\d+\.
+Match: 0s: 1 0l: 3
+Regex: a\d+
+Match: 0s: 1 0l: 2
+Regex: a
+Match: 0s: 1 0l: 1
+
+
+Text: \
+Regex: \.
+Match: F
+Regex: \\
+Match: T 0s: 1 0l: 1
+Regex: .
+Match: T 0s: 1 0l: 1
+
+
