@@ -29,6 +29,7 @@ while (<>) {
 			print "$line: Ok\n";
 		} else {
 			print "$line: Error: with text '$text' (line $text_line)  and regex '$regex' (line $regex_line). I expected: '$expected' but got: '$actual'\n";
+			&runtestDebug($text, $regex);
 		}
 	}
 }
@@ -36,6 +37,13 @@ while (<>) {
 sub runtest {
 	my ($text, $regex) = @_;
 	my $result = `./regex_test '$regex' '$text'`;
+	chomp($result);
+	$result =~ s/^\s+(.*)/$1/;
+	return $result;
+}
+sub runtestDebug {
+	my ($text, $regex) = @_;
+	my $result = `./regex_test '$regex' '$text' debug`;
 	chomp($result);
 	$result =~ s/^\s+(.*)/$1/;
 	return $result;

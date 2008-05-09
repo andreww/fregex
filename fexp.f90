@@ -1,5 +1,7 @@
 module fexp
 
+ use fexp_debug
+
  implicit none
 
  character(len=10), parameter :: numbers = '1234567890'
@@ -11,15 +13,28 @@ module fexp
 
 contains
 
-  logical function match(regexp, text)
+  logical function match(regexp, text, debug)
 
     character(len=*), intent(in) :: regexp
     character(len=*), intent(in) :: text
+    logical, optional, intent(in) :: debug
 
     integer :: pos
 
     matchstart = 0
     matchlength = 0
+
+    if (present(debug)) then
+      if (debug) then
+        call debug_set(.true., 'fexp.debug', 99)
+      else
+        call debug_set(.false.)
+      endif
+    else
+      call debug_set(.false.)
+    endif
+
+    call proc_start('match', regexp, text)
 
     if (regexp(1:1).eq."^") then
         match = matchhere(regexp(2:len(regexp)), text)
@@ -36,6 +51,8 @@ contains
             match = .false.
         enddo
     endif
+    call proc_end('match')
+    call debug_stop
 
   end function match
 
@@ -49,6 +66,7 @@ contains
     integer :: classend 
 
 
+    call proc_start('matchhere', regexp, text)
     if (len(regexp).eq.0) then
         ! Assuming empty input is protected by caller
         ! this is needed to simplify the other recursive functions.
@@ -194,6 +212,7 @@ contains
         res = .false.
     endif
 
+    call proc_end('matchhere')
   end function matchhere
 
 
@@ -246,27 +265,35 @@ contains
       character(len=*), intent(in) :: regexp
       character(len=*), intent(in) :: text
 
-      integer :: pos
+      integer :: poss, pose
 
+      call proc_start('matchstar', starchar, regexp, text)
       if (starchar.eq.'.') then
-          pos = 0 ! Because anything will match the dot.
+          poss = 0 ! Because anything will match the dot.
       else
-          pos = verify(text, starchar) ! This is the last character not 
+          poss = verify(text, starchar) ! This is the last character not 
                                        ! matching the star.
       endif
 
+      if (poss.eq.0) then
+          poss = 1
+      endif
+
+      pose = len(text)
+
       do 
-          if (matchhere(regexp, text(pos:len(text)))) then
+          if (matchhere(regexp, text(poss:pose))) then
              matchstar = .true.
-             matchlength = matchlength + pos -1
+             matchlength = matchlength + poss 
              exit
-          elseif (pos.ge.1) then
-             pos = pos - 1
+          elseif (poss.lt.pose) then
+             pose = pose - 1
           else
               matchstar = .false.
               exit
           endif
        enddo
+       call proc_end('starchar')
 
   end function matchstar
 
