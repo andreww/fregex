@@ -28,7 +28,7 @@ while (<>) {
 		if ($expected eq $actual) {
 			print "$line: Ok\n";
 		} else {
-			print "$line: Error: with text '$text' (line $text_line)  and regex ' $regex' (line $regex_line). I expected: '$expected' but got: '$actual'\n";
+			print "$line: Error: with text '$text' (line $text_line)  and regex '$regex' (line $regex_line). I expected: '$expected' but got: '$actual'\n";
 		}
 	}
 }
