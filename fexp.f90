@@ -288,6 +288,9 @@ contains
              exit
           elseif (poss.lt.pose) then
              pose = pose - 1
+          elseif (poss.lt.len(text)) then
+             poss = poss + 1
+             pose = len(text)
           else
               matchstar = .false.
               exit
@@ -447,6 +450,7 @@ contains
       logical :: negate
       integer :: pos
 
+      call proc_start('starcharclar', class, regexp, text)
       negate = .false.
 
       if (class(1:1).eq.'^') then 
@@ -480,6 +484,7 @@ contains
               exit
           endif
       enddo
+      call proc_end('starcharclar')
 
   end function starcharclar
 
